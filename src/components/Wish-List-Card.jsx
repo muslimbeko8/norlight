@@ -3,7 +3,10 @@ import { Link } from "react-router-dom";
 import { MyContext } from "../Context";
 
 const WishListCard = ({ product }) => {
+  console.log("product", product);
+
   const { state, dispatch } = useContext(MyContext);
+  console.log(state);
 
   const [isLiked, setIsLiked] = useState(false);
 
@@ -19,7 +22,7 @@ const WishListCard = ({ product }) => {
   useEffect(() => {
     localStorage.setItem("liked", JSON.stringify(state.wishlist));
   }, [state.wishlist]);
-  
+
   useEffect(() => {
     if (state.wishlist) {
       const wish = state.wishlist.find((p) => p.id == product.id);

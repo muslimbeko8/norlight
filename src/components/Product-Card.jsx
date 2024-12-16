@@ -7,8 +7,9 @@ const ProductCard = ({ product }) => {
   const { state, dispatch } = useContext(MyContext);
   const [isLiked, setIsLiked] = useState(false);
   const [isInCart, setIsInCart] = useState(false);
-  const navigate = useNavigate()
-  const favHandler =async () => {
+  const navigate = useNavigate();
+
+  const favHandler = async () => {
     if (isLiked) {
       await dispatch({ type: "REMOVE_WISHLIST", payload: product.id });
       setIsLiked(false);
@@ -17,15 +18,15 @@ const ProductCard = ({ product }) => {
       await dispatch({ type: "SET_WISHLIST", payload: product });
     }
   };
-  
+
   useEffect(() => {
-    localStorage.setItem("liked", JSON.stringify(state.wishlist))
-  }, [state.wishlist])
+    localStorage.setItem("liked", JSON.stringify(state.wishlist));
+  }, [state.wishlist]);
 
   const cartHandler = () => {
-    if(isInCart){
-      navigate("/carts")
-    }else{
+    if (isInCart) {
+      navigate("/carts");
+    } else {
       dispatch({ type: "SET_CART", payload: product });
       setIsInCart(true);
     }
@@ -33,37 +34,37 @@ const ProductCard = ({ product }) => {
 
   useEffect(() => {
     if (state.wishlist) {
-      const wish = state.wishlist.find((p) => p.id == product.id);
-      if (wish) {
-        setIsLiked(true);
-      }
+      const wish = state.wishlist.find((p) => p.id === product.id);
+      setIsLiked(!!wish);
     }
-  }, [product, state.wishlist, isLiked]);
+  }, [product, state.wishlist]);
 
   useEffect(() => {
-    if(state.carts){
-      const cart = state.carts.find(p => p.id == product.id)
-      if(cart){
-        setIsInCart(true)
-      }
+    if (state.carts) {
+      const cart = state.carts.find((p) => p.id === product.id);
+      setIsInCart(!!cart);
     }
-  }, [product, state.carts, isInCart])
+  }, [product, state.carts]);
+
+  const handleProductView = () => {
+    navigate(`/carts/${product.id}`);
+  };
 
   return (
     <div className="w-full relative pb-8 bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700">
-      <a href="#">
+      <div onClick={handleProductView} className="cursor-pointer">
         <img
           className="p-8 rounded-t-lg h-[300px] w-full object-contain"
           src={product.image}
           alt={product.title}
         />
-      </a>
+      </div>
       <div className="px-5 pb-5">
-        <a href="#">
+        <div onClick={handleProductView} className="cursor-pointer">
           <h5 className="text-xl font-semibold tracking-tight text-gray-900 dark:text-white">
             {product.title}
           </h5>
-        </a>
+        </div>
         <div className="flex items-center mt-2.5 mb-5">
           <div className="flex items-center space-x-1 rtl:space-x-reverse">
             {array.map((a) =>
@@ -85,7 +86,7 @@ const ProductCard = ({ product }) => {
 
           <div className="flex gap-2 items-center">
             <button
-              onClick={() => favHandler(product)}
+              onClick={favHandler}
               className={`font-medium rounded-lg px-2 transition-all py-1.5 text-center text-2xl`}
             >
               {isLiked ? (
